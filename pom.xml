@@ -49,7 +49,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
-		<dependency>
+		<dependency> <!-- esta dependencia va tener la versio 1.5 algo debido al parent. En la version 1.5 del actuator la url son http://localhost:8081/health, en la version 2.0.xx  cambia -->
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
@@ -112,7 +112,7 @@
 						</image>
                         <!--mysql container-->
 						<image>
-							<name>mysql</name>
+							<name>mysql:5.7</name>
                             <alias>mysqldb</alias>
 							<run>
                                 <!--expose port for dn-->
@@ -132,7 +132,7 @@
 						</image>
                         <!--rabbit container-->
                         <image>
-                            <name>rabbitmq</name>
+                            <name>rabbitmq:3.8-alpine</name>
                             <alias>myrabbitmq</alias>
                             <run>
                                 <ports>
@@ -173,11 +173,11 @@
                                 </dependsOn>
                                 <wait>
                                     <http>
-                                        <url>http://localhost:8081/health</url>
+                                        <url>http://localhost:8081/actuator/health</url>
                                         <method>GET</method>
-                                        <status>200..600</status>
+                                        <status>200..400</status>
                                     </http>
-                                    <time>300000</time>
+                                    <time>200000</time>
                                 </wait>
                             </run>
                         </image>

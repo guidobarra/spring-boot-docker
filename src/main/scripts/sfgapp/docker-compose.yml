@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mysqldb:
-    image: mysql
+    image: mysql:5.7
     restart: always
     ports:
       - '3306:3306'
@@ -11,7 +11,7 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
 
   rabbitmq:
-    image: rabbitmq
+    image: rabbitmq:3.8-alpine
     restart: always
     ports:
       - "5671:5671"
@@ -32,7 +32,24 @@ services:
       SPRING_PROFILES_ACTIVE: 'mysql'
       SPRING_RABBITMQ_HOST: rabbitmq
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+    
+  springbootdocker:
+    image: gubajava/springbootdocker
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - rabbitmq
+      - pageviewservice
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
       interval: 30s
       timeout: 10s
       retries: 3
